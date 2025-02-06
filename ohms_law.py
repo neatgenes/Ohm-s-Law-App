@@ -18,14 +18,16 @@ class Ohms:
     def volts(self):
         self.v = randint(1, 12)
         self.r = randint(100, 1000)
-        self.i = round(uniform(0.1, 5))
+        self.i = round(uniform(0.1, 5), 4)
         self.voltage_equation = self.i*self.r
+        self.voltage_equation = round(self.voltage_equation)
+        print(self.voltage_equation)
         return self.voltage_equation, self.i, self.r, self.v
                  
     def amps(self):
         self.v = randint(1, 12)
         self.r = round(randint(100, 1000), 2)
-        self.i = uniform(0.1, 5)
+        self.i = round(uniform(0.1, 5), 4)
         self.amperage_equation = self.v/self.r
         return self.amperage_equation, self.i, self.r, self.v
         
@@ -47,7 +49,7 @@ class Ohms:
 content = Ohms().volts()
 voltage_equation, amps, resistance, volts = content
 print(f'If you have {resistance} ohms and {amps}, you have {voltage_equation}')
-#print(Ohms().voltage_equation)
+
 
 #print("\n\n\n\n")
 #v = randint(1, 12)
