@@ -28,6 +28,9 @@ from random import randint
 # Tau time canstat = resistance * capacitance
 # Resistance for parallel circuits
 
+
+# NEED A LABEL ON THE LEFT THAT SHOW'S WHAT QUESTION YOU'RE ON
+# NEED TO SHOW HOW MANY YOU GOT RIGHT AT THE END
 class Main(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -41,7 +44,8 @@ class Main(Widget):
         #self.test_button.bind(on_press=self.exit_update)
         self.main_text.bind(on_text_validation=self.text_validation)
         #self.validation_event = asyncio.Event()
-        self.counter = 0  
+        self.counter = 1  
+        self.answer_counter = 0 
         
     def menu_setup(self):
         # WIDGETS
@@ -51,7 +55,7 @@ class Main(Widget):
         self.amps_button = Button(text="Ohm's Law Calculation Test", font_name='main.ttf', color=(.2,1,.2,1), background_color=(0,0,0,1))
         self.exit_button = Button(text='Exit Test', font_name='main.ttf', color=(.2,1,.2,1), background_color=(0,0,0,1))
         #self.test_button = Button(text='TEST')
-        self.score = Label(text="0/10", font_name='main.ttf', color=(.2,1,.2,1))
+        self.score = Label(text="score: 0/10", font_name='main.ttf', color=(.2,1,.2,1))
         self.l1 = Label(text=("Ohm's Law Calculation Test"), font_name='main.ttf', color=(.2,1,.2,1))
         self.l2 = Label(font_name='main.ttf', color=(.2,1,.2,1))
         self.l3 = Label(font_name='main.ttf', color=(.2,1,.2,1))
@@ -97,10 +101,15 @@ class Main(Widget):
     def exit_update(self, *args):
         self.main_text.text = "done"
         self.counter = 5
+        self.answer_counter = 0
         self.ohms_test_button.disabled = False
         self.l1.text = "Ohm's Law Calculation Test"
         self.l2.text = ""
         self.l3.text = ""
+        if self.main_text in self.children and self.score in self.children:
+            self.score.text = "score: 0/10"
+            self.remove_widget(self.score)
+            self.remove_widget(self.main_text)
     
     def exit(self, *args):
         pass
@@ -113,12 +122,11 @@ class Main(Widget):
             if self.main_text not in self.children and self.score not in self.children:
                 self.add_widget(self.score)
                 self.add_widget(self.main_text)
-                print(self.children)
-            
+
             print("WidgetException")
             self.counter += 1
             self.ohms_test_button.disabled = True
-            number = randint(0, 2)
+            number = randint(0, 3)
             print('main menu')
            # menu_running = True
             self.l1.text = "Ohm's Law Calculation Test"
@@ -134,6 +142,8 @@ class Main(Widget):
                 #self.res_udpate()
                 #ak.start(self.resistance())
                 ak.start(self.leds())
+            elif number == 3:
+                ak.start(self.resistance())
             else: 
                 pass
         else:
@@ -142,9 +152,22 @@ class Main(Widget):
             self.l2.text = ""
             self.l3.text = ""
             self.ohms_test_button.disabled = False
+            self.answer_counter = 0
             if self.main_text in self.children and self.score in self.children:
+                self.score.text = "score: 0/10"
                 self.remove_widget(self.main_text)
                 self.remove_widget(self.score)
+
+    def answer_counter_funct(self):
+        # have this got to 0 if the exit button is pressed
+        self.answer_counter += 1
+        print(f" answer counter: {self.answer_counter}")
+        for i in range(0, 11):
+            if self.answer_counter == i:
+                mynum = "score : " + str(i) + "/10"
+                self.score.text = mynum
+        #if self.answer_counter == 1:
+         #   self.score.text = "1/10"       
 
     async def voltage(self):
         print(self.counter)
@@ -175,11 +198,12 @@ class Main(Widget):
             Clock.schedule_once(lambda dt: update_label_text(f'Great Job!\n{voltage_equation} is correct!'))
             await ak.sleep(2)
             self.volts_running = True
+            self.answer_counter_funct()
             self.menu()
 
         elif tasks[1].finished:
             print("finished, setting counter to 5")
-            self.counter = 5
+            self.counter = 12
             self.menu()
 
         else:
@@ -214,10 +238,12 @@ class Main(Widget):
         if self.main_text.text == str(f"{amps_equation:.2f}"):
             Clock.schedule_once(lambda dt: update_label_text(f'Great Job!\n{amps_equation:.2f} is correct!'))
             await ak.sleep(2)
+            self.answer_counter_funct()
             self.menu()
             
+            
         elif tasks[1].finished:
-            self.counter = 5
+            self.counter = 12
             self.menu()
 
         else:
@@ -251,10 +277,11 @@ class Main(Widget):
             Clock.schedule_once(lambda dt: update_label_text(f'Great Job!\n{res_equation:.2f} is correct'))
             print('if is working')
             await ak.sleep(2)
+            self.answer_counter_funct()
             self.menu()
 
         elif tasks[1].finished:
-            self.counter = 5
+            self.counter = 12
             self.menu()
     
         else:
@@ -265,6 +292,7 @@ class Main(Widget):
 
 
     async def leds(self):
+        # ADD TO PYTHON CLASS THAT VOLTAGE HAS TO BE HIGHER THAN 3
         print('LED')
         content = Ohms().leds()
         #self.led_v, self.ma, self.v, self.led_equation
@@ -278,7 +306,7 @@ class Main(Widget):
         self.l3.text = 'LEDs'
         self.l2.text = ''
         # f"If you have an LED that requires {led_v} volts and {ma} miliAmps using a {v} volt battery to power them, what resistance do you need?"
-        self.l1.text = f'You have an LED that requires {led_v} volts\nand {ma} MiliAmps\nas well as a battery that has {v} volts\nHow many volts do you have?'
+        self.l1.text = f'You have an LED that requires {led_v} volts\nand {ma} MiliAmps\nas well as a battery that has {v} volts\nHow many Ohms of resistance do you need??'
         
         tasks = await ak.wait_any(
             ak.event(self.main_text, 'on_text_validate'),
@@ -290,10 +318,11 @@ class Main(Widget):
             Clock.schedule_once(lambda dt: update_label_text(f'Great Job!\n{led_equation} is correct'))
             print('if is working')
             await ak.sleep(2)
+            self.answer_counter_funct()
             self.menu()
 
         elif tasks[1].finished:
-            self.counter = 5
+            self.counter = 12
             self.menu()
     
         else:
