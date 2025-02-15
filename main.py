@@ -13,7 +13,7 @@ from kivy.clock import Clock
 from kivy.uix.image import Image
 from random import randint
 #import asyncio
-
+# SHOW TOTAL AT END
 # CLEAN UP CODE TODAY
 # Highlight colors of volts, amps, res, etc.
 # Add scoring system - done, we can add functionality to it later. Next we should try to get some other quizes on here.
@@ -117,7 +117,7 @@ class Main(Widget):
     def menu(self, *args):
         # NEED AN IF STATEMENT HERE OR EXCEPTION IF THE WIDGET EXISTS, OPPOSITE FOR THE BOTTOM
         #self.add_widget(self.main_text)
-        if self.counter <= 10:
+        if self.counter <= 9:
             print(self.children)
             if self.main_text not in self.children and self.score not in self.children:
                 self.add_widget(self.score)
