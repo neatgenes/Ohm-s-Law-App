@@ -18,4 +18,4 @@ Upon entering your test there are at this point only 4 different types of questi
  ![image](https://github.com/user-attachments/assets/075214c2-6c99-46b0-ace4-83ed53b34383)
 
  The test will let you know the answer at the end and if you got it correct.
- There's also a score at the top, but this can be ignored now since there isn't functionality built into it yet for it to keep score.
+ There's also a score at the top :)
